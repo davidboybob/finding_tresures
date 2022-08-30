@@ -1,4 +1,6 @@
+from cgitb import text
 from tkinter import *
+from tkinter import messagebox
 from turtle import width
 from PIL import ImageTk, Image
 import copy
@@ -6,7 +8,7 @@ import copy
 window = Tk()
 
 window.title("Finding Tresure v1.0")
-window.geometry("2048x1024+300+80")
+window.geometry("1324x700+80+40")
 
 photo_icon = PhotoImage(file = './static/precious_box_title_icon.png')
 window.iconphoto(False, photo_icon)
@@ -40,7 +42,7 @@ class Frame_main():
     # frame_left = None
     def __init__(self, window):
         self.box_icon = ImageTk.PhotoImage(Image.open("./static/unboxing.png").resize((100, 50)))
-        self.beach_img = ImageTk.PhotoImage(Image.open("./static/beach_bg.png"))
+        self.beach_img = ImageTk.PhotoImage(Image.open("./static/beach_bg.png").resize((1200, 680)))
 
         self.frame_left = Frame(window)
         self.frame_left.pack(side="left", fill="both", expand=True, padx=15, pady=15)
@@ -59,15 +61,41 @@ class Frame_main():
         # self.label = Label(self.frame_main, image=img, width=1280, height=1049)
         # self.label.image = img
         # self.label.pack()        
+
+
+    def close_box(self, index):
+        print("close")
+        self.canvas.delete(str(index))
+
     
-    
-    def main(self):
-        total_count = 56
+    def open_box(self, x, y, index):
         
+        # if self.box_switch == True:
+        #     print()
+
+        #     self.canvas.destroy()
+        # elif self.box_switch == False:
+        #     print(self.canvas.create_text(x, y, text="Open the box.", tags=index))
+        #     box_switch = True
+        # print("open")
+        self.canvas.create_text(x, y, text="Open_box", tags=index)
+        # print(self.canvas.tag_raise(index))
+        # print(self.canvas.tag_lower(index))
+        # self.canvas.bind("<B3-Motion>", self.close_box(index))    
+        
+
+
+    def main(self):
+        total_count = 36
+        self.box_switch = False
         for idx in range(total_count):
-            place_x = idx % 7 * 180
-            place_y = idx // 7 * 120
-            secret_box = Button(self.frame_main, text = str(idx+1), image=self.box_icon, compound=BOTTOM)
+            place_x = idx % 6 * 180
+            place_y = idx // 6 * 110
+            secret_box = Button(self.frame_main, 
+                                text = str(idx+1), 
+                                image=self.box_icon, 
+                                compound=BOTTOM, 
+                                command=lambda idx_str=str(idx+1), place_x=place_x, place_y=place_y: self.open_box(place_x, place_y, idx_str))
             secret_box.place(x=(place_x+15), y=(place_y+15))
         # secret_box_canvas = self.canvas.create_window(10, 10, window=secret_box)
 
