@@ -41,8 +41,9 @@ class Frame_main():
     # frame_main = None
     # frame_left = None
     def __init__(self, window):
-        self.box_icon = ImageTk.PhotoImage(Image.open("./static/unboxing.png").resize((100, 50)))
         self.beach_img = ImageTk.PhotoImage(Image.open("./static/beach_bg.png").resize((1200, 680)))
+        self.box_icon = ImageTk.PhotoImage(Image.open("./static/unboxing.png").resize((100, 50)))
+        self.bang_icon = ImageTk.PhotoImage(Image.open("./static/Bang.png").resize((100, 50)))
 
         self.frame_left = Frame(window)
         self.frame_left.pack(side="left", fill="both", expand=True, padx=15, pady=15)
@@ -69,35 +70,33 @@ class Frame_main():
 
     
     def open_box(self, x, y, index):
-        
-        # if self.box_switch == True:
-        #     print()
-
-        #     self.canvas.destroy()
-        # elif self.box_switch == False:
-        #     print(self.canvas.create_text(x, y, text="Open the box.", tags=index))
-        #     box_switch = True
-        # print("open")
-        self.canvas.create_text(x, y, text="Open_box", tags=index)
-        # print(self.canvas.tag_raise(index))
-        # print(self.canvas.tag_lower(index))
-        # self.canvas.bind("<B3-Motion>", self.close_box(index))    
+        self.button_lists[index].configure(image = self.bang_icon)
         
 
 
     def main(self):
         total_count = 36
         self.box_switch = False
+        self.button_lists = []
+
         for idx in range(total_count):
             place_x = idx % 6 * 180
             place_y = idx // 6 * 110
-            secret_box = Button(self.frame_main, 
-                                text = str(idx+1), 
-                                image=self.box_icon, 
-                                compound=BOTTOM, 
-                                command=lambda idx_str=str(idx+1), place_x=place_x, place_y=place_y: self.open_box(place_x, place_y, idx_str))
-            secret_box.place(x=(place_x+15), y=(place_y+15))
+            secret_box = Button(self.frame_main,
+                                text = str(idx+1),
+                                image=self.box_icon,
+                                compound=BOTTOM,
+                                command=lambda index=idx, place_x=place_x, place_y=place_y: self.open_box(place_x, place_y, index))
+            self.button_lists.append(secret_box)
+            # print(secret_box)
+            # secret_box.place(x=(place_x+15), y=(place_y+15))
+            # self.open_box_label.place(x=place_x+15, y=place_y + 15)
         # secret_box_canvas = self.canvas.create_window(10, 10, window=secret_box)
+        
+        for idx, button in enumerate(self.button_lists):
+            place_x = idx % 6 * 180
+            place_y = idx // 6 * 110
+            button.place(x=(place_x+15), y=(place_y+15))
 
 
 class Input_Data(Frame_main):
@@ -120,6 +119,7 @@ class Input_Data(Frame_main):
         label.pack(anchor="w", padx=15)
         
         self.set_member()
+
 
     def entry_data(self):
         self.content = StringVar()
@@ -146,11 +146,11 @@ class Input_Data(Frame_main):
             print(err)
             pass
 
+
     def reset_member(self):
         self.join_member.delete(0, END)
         for idx, data in enumerate(datas.items()):
             self.join_member.insert(idx, data[0])
-
 
 
     def buttons(self):
@@ -164,8 +164,6 @@ class Input_Data(Frame_main):
         add_button.grid(row=0, column=0, padx=5)
         delete_button.grid(row=0, column=1, padx=5)
         reset_button.grid(row=0, column=2, padx=5)
-
-
 
 
 if __name__ == "__main__":
