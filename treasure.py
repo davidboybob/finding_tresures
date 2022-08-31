@@ -8,7 +8,7 @@ import copy
 window = Tk()
 
 window.title("Finding Tresure v1.0")
-window.geometry("1324x700+80+40")
+window.geometry("1400x750+40+20")
 
 photo_icon = PhotoImage(file = './static/precious_box_title_icon.png')
 window.iconphoto(False, photo_icon)
@@ -40,16 +40,18 @@ window.configure(bg=styles["blue_color"])
 class Frame_main():
     # frame_main = None
     # frame_left = None
-    def __init__(self, window):
-        self.beach_img = ImageTk.PhotoImage(Image.open("./static/beach_bg.png").resize((1200, 680)))
+    def __init__(self, window, msg):
+        self.beach_img = ImageTk.PhotoImage(Image.open("./static/beach_bg.png").resize((1100, 680)))
         self.box_icon = ImageTk.PhotoImage(Image.open("./static/unboxing.png").resize((100, 50)))
         self.bang_icon = ImageTk.PhotoImage(Image.open("./static/Bang.png").resize((100, 50)))
 
-        self.frame_left = Frame(window)
-        self.frame_left.pack(side="left", fill="both", expand=True, padx=15, pady=15)
+        self.frame_left = Frame(window, width=300, height=500)
+        self.frame_left.pack(side="left", fill="both", padx=15, pady=15)
+        self.frame_left.propagate(0)
 
-        self.frame_main = Frame(window)
+        self.frame_main = Frame(window, width=1100, height=680)
         self.frame_main.pack(anchor="center", padx=15, pady=15)
+        self.frame_main.propagate(0)
         # frame_main.place(anchor='center', relx=0.5, rely=0.5)
 
         
@@ -68,11 +70,16 @@ class Frame_main():
         print("close")
         self.canvas.delete(str(index))
 
-    
+
+    def append_log(self, msg):
+        pass
+
+
     def open_box(self, x, y, index):
         self.button_lists[index].configure(image = self.bang_icon)
+        self.append_log("박스를 선택했습니다.")
+        # Logs.append_log("%s 박스를 선택했습니다." %(index+1))
         
-
 
     def main(self):
         total_count = 36
@@ -131,6 +138,7 @@ class Input_Data(Frame_main):
         if self.content.get() != "":
             self.join_member.insert(END, self.content.get())
             self.content.set("")
+            self.join_member.see(END)
 
 
     def delete_selected(self):
@@ -166,6 +174,23 @@ class Input_Data(Frame_main):
         reset_button.grid(row=0, column=2, padx=5)
 
 
+class Logs(Frame_main):
+    def __init__(self, frame_left):
+        self.frame_left = frame_left
+        self.msg = Frame_main()
+
+
+    def set_logs_list_box(self):
+        self.logs_box = Listbox(self.frame_left, width=250)
+        self.logs_box.pack(fill="both", padx=15, pady=15)
+
+
+    def append_log(self):
+        self.logs_box.insert(END, self.msg)
+        self.logs_box.update()
+        self.logs_box.see(END)
+    
+
 if __name__ == "__main__":
     frame = Frame_main(window)
     frame.main()
@@ -176,5 +201,9 @@ if __name__ == "__main__":
     input_data.input_label()
     input_data.entry_data()
     input_data.buttons()
+
+    logs = Logs(frame_left)
+    logs.set_logs_list_box()
+    # logs.append_log("testset")
 
     window.mainloop()
